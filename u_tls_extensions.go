@@ -777,3 +777,51 @@ func (e *FakeRecordSizeLimitExtension) Read(b []byte) (int, error) {
 	b[5] = byte(e.Limit & 0xff)
 	return e.Len(), io.EOF
 }
+
+//==================
+
+type EncThenMacExtension struct {
+}
+
+func (e *EncThenMacExtension) Len() int {
+	return 4
+}
+
+func (e *EncThenMacExtension) writeToUConn(uc *UConn) error {
+	return nil
+}
+
+func (e *EncThenMacExtension) Read(b []byte) (int, error) {
+	if len(b) < e.Len() {
+		return 0, io.ErrShortBuffer
+	}
+	b[0] = byte(extensionEncThenMac >> 8)
+	b[1] = byte(extensionEncThenMac)
+	// The length is 0
+	return e.Len(), io.EOF
+}
+
+//==================
+
+type PostHandAuthExtension struct {
+}
+
+func (e *PostHandAuthExtension) Len() int {
+	return 4
+}
+
+func (e *PostHandAuthExtension) writeToUConn(uc *UConn) error {
+	return nil
+}
+
+func (e *PostHandAuthExtension) Read(b []byte) (int, error) {
+	if len(b) < e.Len() {
+		return 0, io.ErrShortBuffer
+	}
+	b[0] = byte(extensionPostHandAuth >> 8)
+	b[1] = byte(extensionPostHandAuth)
+	// The length is 0
+	return e.Len(), io.EOF
+}
+
+//=================
